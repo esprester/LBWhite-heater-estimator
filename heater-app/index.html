@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en" manifest="offline.appcache">
+
+<!-- Copyright 2014 Verticon, Inc. all rights reserved.        -->
+<head>
+<title>LB White Heater Estimator</title>
+<meta charset="utf-8">
+
+<!-- Prevent scaling 
+ <meta name="viewport" content="user-scalable=no, width=device-width" />
+ -->
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+<!-- Eliminate url and button bars if added to home screen -->
+<meta name="apple-mobile-web-app-capable" content="yes" />
+
+<!-- Choose how to handle the phone status bar -->
+<meta name="apple-mobile-web-app-status-bar-style"
+	content="black-translucent" />
+
+<!-- Start -->
+
+<!-- For iPad with high-resolution Retina display running iOS ≥ 7: -->
+<link rel="apple-touch-icon-precomposed" sizes="152x152" href="img/apple-touch-icon-152x152-precomposed.png">
+<!-- For iPad with high-resolution Retina display running iOS ≤ 6: -->
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/apple-touch-icon-144x144-precomposed.png">
+<!-- For iPhone with high-resolution Retina display running iOS ≥ 7: -->
+<link rel="apple-touch-icon-precomposed" sizes="120x120" href="img/apple-touch-icon-120x120-precomposed.png">
+<!-- For iPhone with high-resolution Retina display running iOS ≤ 6: -->
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/apple-touch-icon-114x114-precomposed.png">
+<!-- For the iPad mini and the first- and second-generation iPad on iOS ≥ 7: -->
+<link rel="apple-touch-icon-precomposed" sizes="76x76" href="img/apple-touch-icon-76x76-precomposed.png">
+<!-- For the iPad mini and the first- and second-generation iPad on iOS ≤ 6: -->
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/apple-touch-icon-72x72-precomposed.png">
+<!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+<link rel="apple-touch-icon-precomposed" href="img/apple-touch-icon-precomposed.png">
+
+<link rel="stylesheet" href="css/main.css">
+<script src="js/HeaterCalc.js"></script>
+<script src="js/controller.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-25133376-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-25133376-1');
+</script>
+</head>
+<body>
+	<div id=wrapper>
+		<h1>
+			<img src="img/LBW_White_Logo.png" alt="L.B. White">
+		</h1>
+		<h1>Heater Estimator</h1>
+		<p id="intro" align="center">This tool assumes there is no insulation present. If insulation is present, fewer heaters may be required. To determine Btu/h heater requirements...</p>
+		
+
+
+		<!-- 
+  -- The stuff below is an HTML table inside of an HTML form.  It gets tricky!
+  -- Notice the event handlers on all the form input elements.
+  -->
+		<form name="volumecalc_form">
+			<fieldset class="volumecalc_form">
+				<legend>Room Measurements</legend>
+				<ul>
+					<li><span class="prompt">Find Cubic Measurements of
+							Area by Entering Room Measurements in <select id="unitSelect">
+								<option value="ft.">Feet</option>
+								<option value="m.">Meters</option>
+						</select>
+					</span> <span class="required_notification">* Denotes Required
+							Field</span></li>
+					<li><label for="height">Height:</label> <input type="number"
+						name="height" required pattern="^\d*(\.\d*)?$"
+						title="Numbers with or without decimal points"
+						onChange="compute()" /> <span class="form_hint">Proper
+							format "11.2 or 11"</span> <span class="spaceUnits">ft.</span></li>
+					<li><label for="width">Width:</label> <input type="number"
+						name="width" required pattern="^\d*(\.\d*)?$"
+						title="Numbers with or without decimal points"
+						onChange="compute()" /> <span class="form_hint">Proper
+							format "11.2 or 11"</span> <span class="spaceUnits">ft.</span></li>
+					<li><label for="length">Length:</label> <input type="number"
+						name="length" required pattern="^\d*(\.\d*)?$"
+						title="Numbers with or without decimal points"
+						onChange="compute()" /> <span class="form_hint">Proper
+							format "11.2 or 11"</span> <span class="spaceUnits">ft.</span></li>
+					<li>Cubic <span class="spaceUnitsName">Feet</span> of the
+						Area: <span id="volume"></span>
+					</li>
+
+				</ul>
+			</fieldset>
+
+			<div class="desiredRise">
+				<fieldset>
+					<legend>Room Temperature</legend>
+					<ul>
+						 <li><label class="prompt" for="desiredRiseInTemp">Select
+								Desired Rise in Room Temperature:
+						</label></li>
+						
+						<li><select id="riseSelect">
+								<option value="5">°5</option>
+								<option value="10">°10</option>
+								<option value="20">°20</option>
+								<option value="30">°30</option>
+								<option value="40">°40</option>
+								<option value="50">°50</option>
+								<option value="60" selected>°60</option>
+								<option value="70">°70</option>
+								<option value="80">°80</option>
+								<option value="90">°90</option>
+								<option value="100">°100</option>
+						</select>
+						<select id="unitTempSelect">
+								<option value="f" selected>Fahrenheit</option>
+								<option value="c">Celsius</option>
+								
+						</select>
+						
+					   </li>
+						<li><label for="btusReq">Requirement for Room in Btu/h's:</label> <span
+							id="btusAnswer"> <span id="btusReqNumber"></span> <span
+								id="btusReqWord"></span>
+						</span></li>
+						<li><label for="wattsReq">Requirement for Room in Watts:</label> <span
+							id="wattsAnswer"> <span id="wattsReqNumber"></span> <span
+								id="wattsReqWord"></span>
+						</span></li>
+
+					</ul>
+				</fieldset>
+			</div>
+			<!-- end .desiredRise -->
+		</form>
+		<div class="selections">
+		<h2>Select Heater Type:</h2>
+
+		<select id="productSelect">
+			<option value="productline_0">Select a heater type here.</option>
+			<option value="productline_1">Premier Ductable Unit Heaters</option>
+			<option value="productline_2">Tradesman Portable Forced Air Heaters</option>
+			<option value="productline_3">Tradesman K Portable Kerosene Heaters</option>
+			<option value="productline_4">Foreman Indirect-Fired Heaters</option>
+			<option value="productline_5">Boss Direct-Fired Heaters</option>
+		 	<option value="productline_6">Norseman Convection Heaters</option>
+			<option value="productline_7">Workman Convection Heaters</option>
+			<option value="productline_8">Sun Blast Radiant Heaters</option>
+		</select>
+
+		</div>
+		<!-- end .selections -->
+				
+		<div class="suggestions">
+		
+		
+		<div id="productline_1" class="inv">
+		<h2>May We Suggest:</h2>
+			<ul>
+				
+				<li>
+					<img src="img/Premier-80.png" alt="Premier80">
+				
+					<span id="p80"></span> <a
+						href="https://www.lbwhite.com/products/industrial/premier-portable-heater">Premier
+						80's</a>
+				</li>
+				
+				<li>
+					<img src="img/Premier-170.png" alt="Premier170">
+				
+					<span id="p170"></span> <a
+						href="https://www.lbwhite.com/products/industrial/premier-portable-heater">Premier
+						170's</a>
+				</li>
+				
+				<li>
+					<img src="img/Premier-350.png" alt="Premier350">
+				
+					<span id="p350"></span>
+								<a
+								href="https://www.lbwhite.com/products/industrial/premier-portable-heater">Premier
+									350's</a>
+				</li>
+			</ul>
+			
+		</div>
+		
+		<div id="productline_2" class="inv">
+		<h2>May We Suggest:</h2>
+			<ul>
+				<li>
+					<img src="img/tradesman-125.png" alt="Tradesman 125">
+				
+					<span id="t125"></span>
+								<a
+								href="https://www.lbwhite.com/products/industrial/tradesman-portable-forced-air-heater">Tradesman 125's</a>
+				</li>
+				<li>
+					<img src="img/tradesman-170.png" alt="Tradesman 170">
+				
+					<span id="t170"></span>
+								<a
+								href="https://www.lbwhite.com/products/industrial/tradesman-portable-forced-air-heater">Tradesman 170's</a>
+				</li>
+						<li>
+					<img src="img/tradesman-400.png" alt="Tradesman 400">
+				
+					<span id="t400"></span>
+								<a
+								href="https://www.lbwhite.com/products/industrial/tradesman-portable-forced-air-heater">Tradesman 400's</a>
+				</li>
+			</ul>
+		
+		</div>
+		<div id="productline_3" class="inv">
+		<h2>May We Suggest:</h2>
+			<ul>
+				<li>
+					<img src="img/TradesmanK-75.png" alt="Tradesman K75">
+				
+					<span id="tk75"></span>
+								<a
+								href="https://www.lbwhite.com/products/industrial/tradesman-portable-kerosene-heater">Tradesman K75's</a>
+				</li>
+				<li>
+					<img src="img/TradesmanK-125.png" alt="Tradesman K125">
+				
+					<span id="tk125"></span>
+								<a
+								href="https://www.lbwhite.com/products/industrial/tradesman-portable-kerosene-heater">Tradesman K125's</a>
+				</li>
+				<li>
+					<img src="img/TradesmanK-175.png" alt="Tradesman K175">
+				
+					<span id="tk175"></span>
+								<a
+								href="https://www.lbwhite.com/products/industrial/tradesman-portable-kerosene-heater">Tradesman K175's</a>
+				</li>
+				<li>
+					<img src="img/TradesmanK-210.png" alt="Tradesman K210">
+				
+					<span id="tk210"></span>
+								<a
+								href="https://www.lbwhite.com/products/industrial/tradesman-portable-kerosene-heater">Tradesman K210's</a>
+				</li>
+				<li>
+					<img src="img/TradesmanK-400.png" alt="Tradesman K400">
+				
+					<span id="tk400"></span>
+								<a
+								href="https://www.lbwhite.com/products/industrial/tradesman-portable-kerosene-heater">Tradesman K400's</a>
+				</li>
+				<li>
+					<img src="img/TradesmanK-650.png" alt="Tradesman K650">
+				
+					<span id="tk650"></span>
+								<a
+								href="https://www.lbwhite.com/products/industrial/tradesman-portable-kerosene-heater">Tradesman K650's</a>
+				</li>
+			</ul>
+
+		</div>
+		<div id="productline_4" class="inv">
+         <h2>May We Suggest:</h2>
+			<ul>
+				<li>
+					<img src="img/foreman-230.png" alt="Foreman 230">
+
+					<span id="f230"></span>
+								<a
+								href="https://www.lbwhite.com/products/industrial/foreman-indirect-fired-portable-heater">Foreman 230's</a>
+				</li>
+				<li>
+					<img src="img/DSCN7533-without-labels.png" alt="Foreman 500">
+
+					<span id="f500"></span>
+								<a
+								href="https://www.lbwhite.com/products/industrial/foreman-indirect-fired-portable-heater">Foreman 500's</a>
+				</li>
+				<li>
+					<img src="img/foreman-750.png" alt="Foreman 750">
+
+					<span id="f750"></span>
+								<a
+								href="https://www.lbwhite.com/products/industrial/foreman-indirect-fired-portable-heater">Foreman 750's</a>
+				</li>
+
+			</ul>
+
+		</div>
+		<div id="productline_5" class="inv">
+		<h2>May We Suggest:</h2>
+			<ul>
+				<li>
+					<img src="img/boss-400.png" alt="Boss 400">
+
+					<span id="b400"></span>
+								<a
+								href="https://www.lbwhite.com/products/industrial/boss-direct-fired-portable-heater">Boss 400's</a>
+				</li>
+				<li>
+					<img src="img/boss-1000.png" alt="Boss 1000">
+
+					<span id="b1000"></span>
+								<a
+								href="https://www.lbwhite.com/products/industrial/boss-direct-fired-portable-heater">Boss 1000's</a>
+				</li>
+			</ul>
+
+		</div>
+		<div id="productline_6" class="inv">
+		<h2>May We Suggest:</h2>
+			<ul>
+				<li>
+					<img src="img/norseman-200.png" alt="Norseman 200 Plus">
+
+					<span id="n200"></span>
+								<a
+								href="https://www.lbwhite.com/products/industrial/convection-heaters">Norseman 200 Plus's</a>
+				</li>
+				<li>
+					<img src="img/norseman-250.png" alt="Norseman 250">
+
+					<span id="n250"></span>
+								<a
+								href="https://www.lbwhite.com/products/industrial/convection-heaters">Norseman 250's</a>
+				</li>
+			</ul>
+
+		</div>
+		<div id="productline_7" class="inv">
+		<h2>May We Suggest:</h2>
+			<ul>
+				<li>
+					<img src="img/workman-100.png" alt="Workman 100N Plus">
+
+					<span id="w100"></span>
+								<a
+								href="https://www.lbwhite.com/products/industrial/convection-heaters">Workman 200 Plus's</a>
+				</li>
+				<li>
+					<img src="img/workman-225.png" alt="Workman 225 Plus">
+
+					<span id="w225"></span>
+								<a
+								href="https://www.lbwhite.com/products/industrial/convection-heaters">Workman 225 Plus's</a>
+				</li>
+			</ul>
+
+		</div>
+		<div id="productline_8" class="inv">
+		<h2>May We Suggest:</h2>
+			<ul>
+				<li>
+					<img src="img/sun-blast-15.png" alt="Sun Blast 15">
+				
+					<span id="s15"></span>
+								<a
+								href="https://www.lbwhite.com/products/industrial/sun-blast-radiant-heaters">Sun Blast 15's</a>
+				</li>
+				<li>
+					<img src="img/sun-blast-30.png" alt="Sun Blast 30">
+				
+					<span id="s30"></span>
+								<a
+								href="https://www.lbwhite.com/products/industrial/sun-blast-radiant-heaters">Sun Blast 30's</a>
+				</li>
+				<li>
+					<img src="img/sun-blast-35.png" alt="Sun Blast 35">
+				
+					<span id="s35"></span>
+								<a
+								href="https://www.lbwhite.com/products/industrial/sun-blast-radiant-heaters">Sun Blast 35's</a>
+				</li>
+				<li>
+					<img src="img/sun-blast-125.png" alt="Sun Blast 125">
+				
+					<span id="s125"></span>
+								<a
+								href="https://www.lbwhite.com/products/industrial/sun-blast-radiant-heaters">Sun Blast 125's</a>
+				</li>
+			</ul>
+		</div>
+
+		</div>
+		<!-- end .suggestions -->
+
+		
+
+		<p id="lbwhitelink"><a  href="http://www.lbwhite.com/products/Tent-Heaters/">www.lbwhite.com</a></p>
+	    
+	</div>
+	<!-- end #wrapper -->
+</body>
+</html>
